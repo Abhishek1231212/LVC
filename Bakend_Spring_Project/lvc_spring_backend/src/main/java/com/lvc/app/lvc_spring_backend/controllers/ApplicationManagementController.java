@@ -26,23 +26,25 @@ public class ApplicationManagementController {
 	
 	@GetMapping("/users")
 	public ResponseEntity<List<UserDTO>> fetchAllUsers() {
-		return new ResponseEntity<>(userServices.fetchAll(), HttpStatus.OK);
+		List<UserDTO> users = userServices.fetchAll();
+		return ResponseEntity.ok(users);
 	}
 	@GetMapping("/users/{id}")
-	public ResponseEntity<UserDTO> getUserById(@PathVariable long id){
-		return new ResponseEntity<UserDTO>(userServices.get(id).get(), HttpStatus.OK);
+	public ResponseEntity<UserDTO> getUserById(@PathVariable String id){
+		UserDTO user = userServices.getById(Long.parseLong(id));
+		return ResponseEntity.ok(user);
 	}
 	@PostMapping("/users")
 	public ResponseEntity<UserDTO> saveUser(@RequestBody UserDTO user){
-		return new ResponseEntity<UserDTO>(userServices.add(user), HttpStatus.CREATED);
+		return ResponseEntity.ok(userServices.add(user));
 	}
 	@PutMapping("/users")
 	public ResponseEntity<UserDTO> updateUser(@RequestBody UserDTO user){
-		return new ResponseEntity<UserDTO>(userServices.add(user), HttpStatus.CREATED);
+		return ResponseEntity.ok(userServices.add(user));
 	}
 	@DeleteMapping("/users/{id}")
-	public ResponseEntity<UserDTO> deleteUser(@PathVariable long id){
-		userServices.remove(id);
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	public ResponseEntity<List<UserDTO>> deleteUser(@PathVariable String id){
+		List<UserDTO> users = userServices.remove(Long.parseLong(id));
+		return ResponseEntity.ok(users);
 	}
 }

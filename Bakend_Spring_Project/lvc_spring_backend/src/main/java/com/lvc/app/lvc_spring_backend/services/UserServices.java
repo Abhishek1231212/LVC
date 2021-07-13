@@ -2,40 +2,44 @@ package com.lvc.app.lvc_spring_backend.services;
 
 import java.util.List;
 import java.util.Optional;
-
+import org.modelmapper.TypeToken;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import com.lvc.app.lvc_spring_backend.dos.UserDO;
 import com.lvc.app.lvc_spring_backend.dtos.UserDTO;
 import com.lvc.app.lvc_spring_backend.repository.UserRepository;
 
 @Service
-public class UserServices implements Services<UserDTO> {
+@Scope("prototype")
+public class UserServices {
 
 	@Autowired
 	UserRepository userRepository;
-	
-	@Override
+	@Autowired
+	private ModelMapper modelMapper;
+
 	public UserDTO add(UserDTO user) {
-		return userRepository.save(user);
+		UserDO userDO = modelMapper.map(user, UserDO.class);
+		return modelMapper.map(userRepository.save(userDO), new TypeToken<UserDTO>() {
+		}.getType());
 	}
 
-	@Override
 	public List<UserDTO> fetchAll() {
-		return userRepository.findAll();
+		return modelMapper.map(userRepository.findAll(), new TypeToken<List<UserDTO>>() {
+		}.getType());
 	}
 
-	@Override
-	public Optional<UserDTO> get(Long id) {
-		return userRepository.findById(id);
+	public UserDTO getById(Long id) {
+		return modelMapper.map(userRepository.findById(id).get(), new TypeToken<UserDTO>() {
+		}.getType());
 	}
 
-	@Override
-	public void remove(Long id) {
-		if(get(id).isPresent()) {
-			userRepository.delete(get(id).get());
-		}
-		
+	public List<UserDTO> remove(Long id) {
+		userRepository.deleteById(id);
+		return fetchAll();
 	}
 
 }
