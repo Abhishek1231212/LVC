@@ -8,5 +8,7 @@ import com.lvc.app.lvc_spring_backend.dtos.UserDTO;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserDO, Long> {
+
+	boolean existsByName(String name);
 	
 }
